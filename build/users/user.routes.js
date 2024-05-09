@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const express_validation_1 = require("express-validation");
+const user_validation_1 = require("./user.validation");
+const user_controller_1 = require("./user.controller");
+const isAuth_1 = __importDefault(require("../middleware/isAuth"));
+const gatewayAuth_1 = __importDefault(require("../middleware/gatewayAuth"));
+const source_authentication_1 = __importDefault(require("../middleware/source-authentication"));
+const router = (0, express_1.Router)();
+router.get('/profile', gatewayAuth_1.default, user_controller_1.getProfile);
+router.patch('/profile', (0, express_validation_1.validate)(user_validation_1.updateProfileSchema), gatewayAuth_1.default, user_controller_1.editProfile);
+router.get('/verify-token', isAuth_1.default, user_controller_1.getProfile);
+router.use(source_authentication_1.default);
+router.post('/signup', (0, express_validation_1.validate)(user_validation_1.signUpuserSchema), user_controller_1.signUp);
+router.post('/login', (0, express_validation_1.validate)(user_validation_1.logInuserSchema), user_controller_1.login);
+exports.default = router;
